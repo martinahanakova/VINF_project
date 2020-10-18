@@ -1,0 +1,5 @@
+Data
+__pycache__
+.DS_Store
+.idea
+hs_err_pid1.log
