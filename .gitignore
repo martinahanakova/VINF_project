@@ -3,3 +3,5 @@ __pycache__
 .DS_Store
 .idea
 hs_err_pid1.log
+train_data
+VINF - tmp.ipynb
