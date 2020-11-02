@@ -37,6 +37,7 @@ def reduce(line, previous_key, dictionary):
 previous_link = ""
 dictionary = {}
 dictionary["alternative_titles"] = []
+
 for line in sys.stdin:
     previous_link, dictionary = reduce(line, previous_link, dictionary)
 
