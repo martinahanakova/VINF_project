@@ -5,3 +5,6 @@ __pycache__
 hs_err_pid1.log
 train_data
 VINF - tmp.ipynb
+Small_data
+elastic_configuration.py
+output

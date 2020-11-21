@@ -41,15 +41,24 @@ def parse_input(line):
     elif title_pattern.match(line):
         title_match = title_pattern.match(line)
         link = title_match.group("link")
-        title = title_match.group("title")
-        # title = re.sub(r"(\w)([A-Z])", r"\1 \2", title_match.group("title"))
+
+        pre_title = title_match.group("title")
+        pre_title = pre_title[:-1] + pre_title[-1].lower()
+
+        title = ' '.join(list(re.findall(r"[A-Za-z][a-z]*", pre_title)))
+
         output = link + '\t' + 't' + '\t' + title + '\n'
 
     else:
-        output = "Wrong input\n"
+        output = ""
+        #output = "Wrong input\n"
 
     sys.stdout.write(output)
 
 
 for line in sys.stdin:
     parse_input(line)
+
+  #cat ./Data/* | python mapper.py |
+  #sort -t$'\t' -k1 -k2 |
+  #python reducer_1.py | sort | python reducer_2.py | python3 reducer_3.py

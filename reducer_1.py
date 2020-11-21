@@ -12,6 +12,10 @@ def reduce(line, previous_key, previous_kind, new_line):
         key = line_match.group("key")
         kind = line_match.group("kind")
         value = line_match.group("value")
+    else:
+        print("ERROR")
+        print(line)
+        exit(0)
 
     if key != previous_key:
         if previous_key != "":
@@ -20,11 +24,20 @@ def reduce(line, previous_key, previous_kind, new_line):
         previous_kind = kind
         new_line = ""
 
+    if key == previous_key:
+        if previous_kind == 'a' or previous_kind == 'c':
+            sys.stdout.write(new_line)
+            previous_key = key
+            previous_kind = kind
+            new_line = ""
+
     if kind == 'r':
         new_line = value + '\tr\t'
     elif kind == 't':
         if previous_kind == 'r':
             new_line = new_line + value + '\n'
+        else:
+            new_line = key + '\t' + kind + '\t' + value + '\n'
     else:
         new_line = key + '\t' + kind + '\t' + value + '\n'
 
