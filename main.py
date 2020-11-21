@@ -1,18 +1,13 @@
-import parser
+import sys
+import search
 
 
 if __name__ == '__main__':
 
-    parser = parser.Parser()
+    search = search.Search()
 
-    # parse datasets
-    parser.parse_titles()
+    while True:
+        sys.stdout.write("Type your search: ")
 
-    parser.parse_abstracts()
-    #parser.parse_redirects()
-    #parser.parse_categories()
-
-    #cat. /Data /* | python mapper.py |
-    #sort - t$'\t' - k1 - k2 |
-    #python reducer_1.py | sort | python reducer_2.py
-
+        search_query = sys.stdin.readline()
+        search.search(search_query)
