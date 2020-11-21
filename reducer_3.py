@@ -1,5 +1,6 @@
 import sys
 import requests
+from requests.auth import HTTPBasicAuth
 
 
 def post_to_elastic(line):
@@ -8,7 +9,7 @@ def post_to_elastic(line):
 
     header = {'Content-Type': 'application/json'}
 
-    response = requests.post("http://localhost:9200/my_index/hnhn", data, headers=header)
+    response = requests.post("https://2eb9ed40ed504fcf9b757fecd1d22abe.eastus2.azure.elastic-cloud.com:9243/my_index/db_page", data, headers=header, auth=HTTPBasicAuth("elastic", "qzvIrfWuaXeJtqQZ3yDtU7Fl"))
     sys.stdout.write("The output of the URL is: " + response.text + "\n\n")
 
 
