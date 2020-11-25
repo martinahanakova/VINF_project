@@ -1,6 +1,5 @@
 import re
 import sys
-import json
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -24,7 +23,7 @@ class Search:
         data = self.prepare_data(search_query)
 
         response = requests.get(
-            "https://2eb9ed40ed504fcf9b757fecd1d22abe.eastus2.azure.elastic-cloud.com:9243/my_index/db_page/_search/?pretty",
+            "https://2eb9ed40ed504fcf9b757fecd1d22abe.eastus2.azure.elastic-cloud.com:9243/test_index/_doc/_search/?pretty",
              json=data, auth=HTTPBasicAuth("elastic", "qzvIrfWuaXeJtqQZ3yDtU7Fl"))
 
         results_link_match = self.result_link_pattern.findall(response.text)
@@ -46,7 +45,8 @@ class Search:
                 "query": {
                     "multi_match": {
                         "query": search_query,
-                        "fields": ["title^4", "alternative_titles^2", "abstract", "category^2"]
+                        "fields": ["title.fulltext^4", "alternative_titles.fulltext^2",
+                                   "abstract.fulltext", "category.fulltext^2"]
                     }
                 }
             }
@@ -78,12 +78,14 @@ class Search:
     def field_query(self, search_query):
         field_query_match = self.field_query_pattern.match(search_query)
         field = field_query_match.group("field")
+        field_fulltext = field + ".fulltext"
         query = field_query_match.group("query")
 
         search_request = {
                 "query": {
-                    "match": {
-                       field: query
+                    "multi_match": {
+                        "query": query,
+                        "fields": [field_fulltext, field + '^3']
                     }
                 }
         }
