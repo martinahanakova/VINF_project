@@ -1,6 +1,7 @@
+#!/usr/bin/python
+
 import re
 import sys
-import json
 
 
 def reduce(line, previous_key, previous_kind, new_line):

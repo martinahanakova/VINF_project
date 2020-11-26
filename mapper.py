@@ -1,3 +1,6 @@
+#!/usr/bin/python
+"""mapper.py"""
+
 import re
 import sys
 

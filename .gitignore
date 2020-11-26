@@ -2,9 +2,5 @@ Data
 __pycache__
 .DS_Store
 .idea
-hs_err_pid1.log
 train_data
-VINF - tmp.ipynb
-Small_data
-elastic_configuration.py
 output
