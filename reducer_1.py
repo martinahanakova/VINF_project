@@ -4,8 +4,8 @@ import re
 import sys
 
 
-def reduce(line, previous_key, previous_kind, new_line):
-    line_p = r"""^(?P<key>[^\t]+)\t(?P<kind>[a,t,c,r])\t(?P<value>.+)$"""
+def reduce(line, previous_key, previous_kind, new_line, category_name):
+    line_p = r"""^(?P<key>[^\t]+)\t(?P<kind>[a,t,c,r,l])\t(?P<value>.+)$"""
     line_pattern = re.compile(line_p)
 
     if line_pattern.match(line):
@@ -14,20 +14,24 @@ def reduce(line, previous_key, previous_kind, new_line):
         kind = line_match.group("kind")
         value = line_match.group("value")
     else:
-        print("ERROR")
-        print(line)
-        exit(0)
+        return previous_key, previous_kind, new_line, category_name
 
     if key != previous_key:
-        if previous_key != "":
-            sys.stdout.write(new_line)
+        if previous_key != "" and previous_kind != 'r' and previous_kind != 'c':
+            sys.stdout.buffer.write(new_line.encode("utf-8"))
         previous_key = key
         previous_kind = kind
         new_line = ""
+        category_name = ""
 
     if key == previous_key:
-        if previous_kind == 'a' or previous_kind == 'c':
-            sys.stdout.write(new_line)
+        if previous_kind == 'a':
+            sys.stdout.buffer.write(new_line.encode("utf-8"))
+            previous_key = key
+            previous_kind = kind
+            new_line = ""
+        elif previous_kind == 'l':
+            sys.stdout.buffer.write(new_line.encode("utf-8"))
             previous_key = key
             previous_kind = kind
             new_line = ""
@@ -39,16 +43,26 @@ def reduce(line, previous_key, previous_kind, new_line):
             new_line = new_line + value + '\n'
         else:
             new_line = key + '\t' + kind + '\t' + value + '\n'
+    elif kind == 'c':
+        category_name = value
+    elif kind == 'l':
+        if category_name != "":
+            new_line = value + '\t' + 'c' + '\t' + category_name + '\n'
     else:
         new_line = key + '\t' + kind + '\t' + value + '\n'
 
-    return previous_key, previous_kind, new_line
+    previous_kind = kind
+
+    return previous_key, previous_kind, new_line, category_name
 
 
 previous_link = ""
 previous_kind = ""
 new_line = ""
-for line in sys.stdin:
-    previous_link, previous_kind, new_line = reduce(line, previous_link, previous_kind, new_line)
+category_name = ""
+for line in sys.stdin.buffer:
+    line = line.decode("utf-8")
+    previous_link, previous_kind, new_line, category_name = \
+        reduce(line, previous_link, previous_kind, new_line, category_name)
 
-sys.stdout.write(new_line)
+sys.stdout.buffer.write(new_line.encode("utf-8"))
