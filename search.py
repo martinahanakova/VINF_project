@@ -23,8 +23,8 @@ class Search:
         data = self.prepare_data(search_query)
 
         response = requests.get(
-            "https://2eb9ed40ed504fcf9b757fecd1d22abe.eastus2.azure.elastic-cloud.com:9243/test_index/_doc/_search/?pretty",
-             json=data, auth=HTTPBasicAuth("elastic", "qzvIrfWuaXeJtqQZ3yDtU7Fl"))
+            "https://e6fbbd886c5b4eea9f2230c887a4e4d3.eastus2.azure.elastic-cloud.com:9243/vinf_index/_search/?pretty",
+             json=data, auth=HTTPBasicAuth("elastic", "sroyNGq5cNz7irv4TV8Iot6Q"))
 
         results_link_match = self.result_link_pattern.findall(response.text)
 
@@ -35,11 +35,15 @@ class Search:
     def prepare_data(self, search_query):
         search_request = ""
 
-        if self.phrase_query_pattern.match(search_query):
+        if self.bool_query_pattern.match(search_query):
+            search_request = self.bool_query(search_query)
+
+        elif self.phrase_query_pattern.match(search_query):
             search_request = self.phrase_query(search_query)
 
         elif self.field_query_pattern.match(search_query):
             search_request = self.field_query(search_query)
+
         else:
             search_request = {
                 "query": {
@@ -100,12 +104,17 @@ class Search:
         query2 = bool_query_match.group("query2")
         logic = bool_query_match.group("logic")
 
+        search_request = ""
+
         if logic == "AND":
             search_request = {
                 "query": {
                     "bool": {
                         "must": {
-                            "match": { field: query }
+                            "match": {field: query}
+                        },
+                        "must": {
+                            "match": {field2: query2}
                         }
                     }
                 }
@@ -121,3 +130,5 @@ class Search:
                     }
                 }
             }
+
+        return search_request
