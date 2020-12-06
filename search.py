@@ -75,8 +75,6 @@ class Search:
             "_source": "key"
         }
 
-        print("phrase")
-
         return search_request
 
     def field_query(self, search_query):
@@ -110,12 +108,10 @@ class Search:
             search_request = {
                 "query": {
                     "bool": {
-                        "must": {
-                            "match": {field: query}
-                        },
-                        "must": {
-                            "match": {field2: query2}
-                        }
+                        "must": [
+                            {"match": {field: query}},
+                            {"match": {field2: query2}}
+                        ]
                     }
                 }
             }

@@ -46,4 +46,4 @@ for line in sys.stdin:
         data = ""
 
 if data != "":
-    batch_post(data)
+    send = batch_post(data, send)
